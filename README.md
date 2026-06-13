@@ -6,7 +6,7 @@
 [![Qdrant](https://img.shields.io/badge/Qdrant-VectorDB-purple.svg)](https://qdrant.tech/)
 [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
 
-**ContextFlow RAG Engine** is an advanced, production-grade agentic Retrieval-Augmented Generation (RAG) system. Powered by **FastAPI** and **LangGraph**, it dynamically routes user questions, retrieves context from cloud vector databases, and performs real-time self-checking to deliver reliable answers. 
+> **Production-grade, self-correcting RAG engine built with FastAPI & LangGraph. Features multi-provider LLM fallbacks (OpenRouter, Groq, Gemini), hybrid search (BM25 + Qdrant/FAISS), Flashrank reranking, Langfuse tracing, MongoDB session history, SlowAPI rate-limiting, and an automated LLM-as-a-Judge hallucination grader.**
 
 <p align="center">
   <img src="adaptive_RAG.png" alt="ContextFlow RAG Workflow" width="700">
