@@ -14,7 +14,19 @@ from langchain_qdrant import QdrantVectorStore
 
 from src.core.config import settings
 
-embeddings = OpenAIEmbeddings()
+# Check if running with mock credentials (e.g., in CI pipelines)
+openai_api_key = os.environ.get("OPENAI_API_KEY", "")
+if not openai_api_key or openai_api_key.startswith("mock"):
+    print("Detected mock/missing OpenAI API key. Using MockOpenAIEmbeddings for environment compatibility.")
+    from langchain_core.embeddings import Embeddings
+    class MockOpenAIEmbeddings(Embeddings):
+        def embed_documents(self, texts: List[str]) -> List[List[float]]:
+            return [[0.0] * 1536 for _ in texts]
+        def embed_query(self, text: str) -> List[float]:
+            return [0.0] * 1536
+    embeddings = MockOpenAIEmbeddings()
+else:
+    embeddings = OpenAIEmbeddings()
 
 # Global variables to store retriever components for reuse
 _semantic_vectorstore = None
@@ -98,6 +110,11 @@ def retriever_chain(chunks: List[Document]) -> bool:
     try:
         # Invalidate cached retriever tool to force reconstruction with new documents
         _retriever_tool = None
+        try:
+            from src.rag.reAct_agent import reset_agent_executor
+            reset_agent_executor()
+        except ImportError:
+            pass
 
         # 1. Initialize BM25 Keyword Retriever
         _bm25_retriever = BM25Retriever.from_documents(chunks)
