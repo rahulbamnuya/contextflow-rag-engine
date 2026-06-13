@@ -181,10 +181,10 @@ Follow these commands sequentially to clone and run the application locally on y
 
 ---
 
-### Option 2: Automation Setup Tool (Windows Batch)
-Simply run the setup batch script in your terminal and select your action:
-```bash
-setup_dev.bat
+### Option 2: Automation Setup Tool (Windows PowerShell)
+Simply run the setup batch script in your PowerShell terminal and select your action:
+```powershell
+.\setup_dev.bat
 ```
 *   Select `[1]` to install dependencies and configure the virtual environment.
 *   Select `[2]` to run the PyTest suite.
