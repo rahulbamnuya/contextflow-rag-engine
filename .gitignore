@@ -1,0 +1,45 @@
+# ==============================================================================
+# Git Ignore Configuration for ContextFlow RAG Engine
+# ==============================================================================
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python Cache & Compiled Files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Sensitive Configurations & Keys
+.env
+API_KEYS_SUMMARY.txt
+*description.txt
+
+# Local Vector Databases & Temporary Stores
+*.faiss
+*.index
+db/local_store/
+data/
+
+# Testing & Linting
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+
+# IDE and System Files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+.DS_Store
+Thumbs.db
