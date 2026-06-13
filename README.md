@@ -8,7 +8,9 @@
 
 **ContextFlow RAG Engine** is an advanced, production-grade agentic Retrieval-Augmented Generation (RAG) system. Powered by **FastAPI** and **LangGraph**, it dynamically routes user questions, retrieves context from cloud vector databases, and performs real-time self-checking to deliver reliable answers. 
 
-The system adapts its workflow dynamically, choosing between custom document retrieval, common-knowledge LLM reasoning, or live web search.
+<p align="center">
+  <img src="adaptive_RAG.png" alt="ContextFlow RAG Workflow" width="700">
+</p>
 
 ---
 
@@ -95,31 +97,83 @@ LANGFUSE_BASE_URL=https://cloud.langfuse.com
 
 ---
 
-## 🛠️ Quick Start & Setup
+## 🛠️ Installation & Setup
 
-### Option 1: Automation Tool (Windows)
-Run the setup batch script in your terminal:
+### Option 1: Virtual Environment (`venv`) Setup (Step-by-Step)
+
+Follow these commands sequentially to clone and run the application locally on your machine:
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/rahulbamnuya/contextflow-rag-engine.git
+   ```
+
+2. **Navigate into the Project Folder**
+   ```bash
+   cd contextflow-rag-engine
+   ```
+
+3. **Configure Environment Variables**
+   Copy the example file to create your local environment file:
+   * **Windows (PowerShell)**:
+     ```powershell
+     Copy-Item .env.example .env
+     ```
+   * **Windows (CMD)** or **Linux/macOS**:
+     ```bash
+     cp .env.example .env
+     ```
+   *(Now open the `.env` file and insert your API keys for OpenRouter, Tavily, MongoDB, and Langfuse).*
+
+4. **Initialize Virtual Environment**
+   * Create the environment:
+     ```bash
+     python -m venv .venv
+     ```
+   * Activate the environment:
+     * **Windows (PowerShell)**:
+       ```powershell
+       .venv\Scripts\Activate.ps1
+       ```
+     * **Windows (CMD)**:
+       ```cmd
+       .venv\Scripts\activate.bat
+       ```
+     * **Linux/macOS**:
+       ```bash
+       source .venv/bin/activate
+       ```
+
+5. **Install Required Packages**
+   Ensure your pip is updated and install the dependencies:
+   ```bash
+   python -m pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+
+6. **Run backend and frontend servers**
+   * **Start Backend API (FastAPI)**:
+     ```bash
+     uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+     ```
+   * **Start Frontend UI (Streamlit)**:
+     Open a new terminal session, activate the venv, and run:
+     ```bash
+     streamlit run streamlit_app/home.py
+     ```
+
+---
+
+### Option 2: Automation Setup Tool (Windows Batch)
+Simply run the setup batch script in your terminal and select your action:
 ```bash
 setup_dev.bat
 ```
 *   Select `[1]` to install dependencies and configure the virtual environment.
-*   Select `[2]` to run the PyTest suite (including the **LLM-as-a-Judge** evaluations).
+*   Select `[2]` to run the PyTest suite.
 *   Select `[3]` and `[4]` to launch the FastAPI backend and Streamlit frontend.
 
-### Option 2: Using Make (Linux / macOS)
-1.  **Initialize Environment**:
-    ```bash
-    make setup
-    ```
-2.  **Run Tests**:
-    ```bash
-    make test
-    ```
-3.  **Run Services**:
-    ```bash
-    make run-backend
-    make run-frontend
-    ```
+---
 
 ### Option 3: Running via Docker Compose
 Build and run the entire stack (FastAPI, Streamlit, MongoDB, Qdrant) in one command:
