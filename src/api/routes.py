@@ -19,7 +19,6 @@ from src.rag.graph_builder import builder
 from src.core.limiter import limiter
 
 router = APIRouter()
-users_collection = db["users"]
 
 # HMAC signing secret (In production, load this from settings/environment)
 SECRET_KEY = "contextflow_rag_production_ready_secret_key"
@@ -88,11 +87,11 @@ async def auth_init():
 @limiter.limit("5/minute")
 async def create_user_route(auth: UserAuth, request: Request):
     """Create a new user account in MongoDB (Rate limited)."""
-    existing_user = await users_collection.find_one({"username": auth.username})
+    existing_user = await db["users"].find_one({"username": auth.username})
     if existing_user:
         raise HTTPException(status_code=400, detail="User already exists")
 
-    await users_collection.insert_one({
+    await db["users"].insert_one({
         "username": auth.username,
         "password_hash": hash_password(auth.password)
     })
@@ -103,7 +102,7 @@ async def create_user_route(auth: UserAuth, request: Request):
 @limiter.limit("10/minute")
 async def login_user_route(auth: UserAuth, request: Request):
     """Authenticate credentials and return a signed session token (Rate limited)."""
-    user = await users_collection.find_one({"username": auth.username})
+    user = await db["users"].find_one({"username": auth.username})
     if not user or user["password_hash"] != hash_password(auth.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 

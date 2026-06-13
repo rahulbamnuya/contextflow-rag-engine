@@ -10,8 +10,6 @@ from langchain_core.messages import BaseMessage
 
 from src.db.mongo_client import db
 
-collection = db["chat_history"]
-
 
 class MongoDBChatMessageHistory(BaseChatMessageHistory):
     """Chat history backed by MongoDB."""
@@ -25,6 +23,11 @@ class MongoDBChatMessageHistory(BaseChatMessageHistory):
         """
         self.session_id = session_id
 
+    @property
+    def collection(self):
+        """Access the collection dynamically to prevent closed event loop issues in tests."""
+        return db["chat_history"]
+
     async def add_message(self, message: BaseMessage) -> None:
         """
         Save a message to MongoDB.
@@ -32,7 +35,7 @@ class MongoDBChatMessageHistory(BaseChatMessageHistory):
         Args:
             message: The message to save.
         """
-        await collection.insert_one({
+        await self.collection.insert_one({
             "session_id": self.session_id,
             "type": message.type,
             "content": message.content,
@@ -49,7 +52,7 @@ class MongoDBChatMessageHistory(BaseChatMessageHistory):
         """
         from langchain_core.messages import messages_from_dict
 
-        cursor = collection.find({"session_id": self.session_id}).sort("timestamp", 1)
+        cursor = self.collection.find({"session_id": self.session_id}).sort("timestamp", 1)
         docs = await cursor.to_list(length=1000)
 
         # Convert to BaseMessage objects
@@ -66,7 +69,7 @@ class MongoDBChatMessageHistory(BaseChatMessageHistory):
 
     async def clear(self) -> None:
         """Delete all messages for a session."""
-        await collection.delete_many({"session_id": self.session_id})
+        await self.collection.delete_many({"session_id": self.session_id})
 
 
 class ChatHistory:

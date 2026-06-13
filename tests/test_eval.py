@@ -32,8 +32,12 @@ def evaluate_faithfulness(context: str, question: str, answer: str) -> Verificat
         f"Evaluate the generated answer."
     )
     
-    # Check if we have an active LLM configuration, otherwise use a mock judge
-    if os.getenv("OPENAI_API_KEY") or os.getenv("GROQ_API_KEY"):
+    # Check if we have an active, non-mock LLM configuration, otherwise use a mock judge
+    api_key = os.getenv("OPENAI_API_KEY", "")
+    groq_key = os.getenv("GROQ_API_KEY", "")
+    has_valid_keys = (api_key and not api_key.startswith("mock")) or (groq_key and not groq_key.startswith("mock"))
+    
+    if has_valid_keys:
         # Force structured schema parsing using Pydantic
         structured_llm = llm.with_structured_output(VerificationResult)
         result = structured_llm.invoke([
